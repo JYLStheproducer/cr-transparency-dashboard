@@ -1,11 +1,14 @@
 import { Wallet, Newspaper, Users, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import crLogo from "@/assets/cr-logo.png";
 
+import { Membre } from "@/types/data";
+
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
   onLogout: () => void;
   isAdmin?: boolean;
+  currentMembre?: Membre;
 }
 
 const menuItems = [
@@ -15,7 +18,7 @@ const menuItems = [
   { id: "membres", label: "Membres", icon: Users },
 ];
 
-const Sidebar = ({ activeSection, onSectionChange, onLogout, isAdmin = false }: SidebarProps) => {
+const Sidebar = ({ activeSection, onSectionChange, onLogout, isAdmin = false, currentMembre }: SidebarProps) => {
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar flex flex-col z-40">
       {/* Logo */}
@@ -63,6 +66,17 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout, isAdmin = false }: 
           >
             <Settings className="h-5 w-5" />
             <span className="font-medium">Administration</span>
+          </a>
+        )}
+
+        {/* Lien spécifique pour Jean Yves */}
+        {currentMembre?.nom?.includes("MIGOLET") && currentMembre?.nom?.includes("JEAN YVES") && (
+          <a
+            href="/admin"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
+          >
+            <Settings className="h-5 w-5" />
+            <span className="font-medium">Admin</span>
           </a>
         )}
       </nav>

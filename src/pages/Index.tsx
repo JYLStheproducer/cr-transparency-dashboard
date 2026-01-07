@@ -23,7 +23,8 @@ const Index = () => {
   const [showModal, setShowModal] = useState(true);
   const [currentMembre, setCurrentMembre] = useState<any>(null);
   const [data, setData] = useState<DashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Initialisé à false
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true); // État spécifique pour le chargement de l'auth
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("dashboard");
 
@@ -47,6 +48,7 @@ const Index = () => {
       } catch (err) {
         console.error("Erreur d'authentification:", err);
       }
+      setIsLoadingAuth(false); // Terminer le chargement de l'authentification
     };
 
     checkAuth();
@@ -79,16 +81,22 @@ const Index = () => {
   }, [isAuthenticated]);
 
   const loadDashboardData = async () => {
+    console.log('Début du chargement des données du dashboard...');
     setIsLoading(true);
     setError(null);
 
     try {
+      console.log('Appel de fetchDashboardData...');
       const dashboardData = await fetchDashboardData();
+      console.log('Données récupérées, mise à jour du state:', dashboardData);
       setData(dashboardData);
+      console.log('State mis à jour avec succès');
     } catch (err) {
+      console.error('Erreur lors du chargement des données:', err);
       setError(err instanceof Error ? err.message : "Erreur de chargement des données");
     } finally {
       setIsLoading(false);
+      console.log('Fin du chargement des données, isLoading:', false);
     }
   };
 
@@ -130,13 +138,13 @@ const Index = () => {
   };
 
   if (!isAuthenticated) {
-    // Afficher un loader si les données ne sont pas encore chargées
-    if (isLoading) {
+    // Afficher un loader pendant le chargement de l'authentification
+    if (isLoadingAuth) {
       return (
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-2"></div>
-            <p>Chargement des données de connexion...</p>
+            <p>Vérification de l'état de connexion...</p>
           </div>
         </div>
       );
@@ -184,6 +192,7 @@ const Index = () => {
         onSectionChange={setActiveSection}
         onLogout={handleLogout}
         isAdmin={canEdit}
+        currentMembre={currentMembre}
       />
 
       <main className="ml-64 min-h-screen p-8">
