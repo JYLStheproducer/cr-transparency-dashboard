@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: votre-nom/votre-depot-cr # Remplacez par votre repo GitHub
+  repo: JYLStheproducer/cr-transparency-dashboard
   branch: main
 
 media_folder: "public/images" # Dossier pour les images
