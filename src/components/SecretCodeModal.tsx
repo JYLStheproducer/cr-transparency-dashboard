@@ -5,24 +5,40 @@ import { Button } from "@/components/ui/button";
 import { Lock, ShieldCheck } from "lucide-react";
 import crLogo from "@/assets/cr-logo.png";
 
-interface SecretCodeModalProps {
-  isOpen: boolean;
-  onSuccess: () => void;
+export interface Membre {
+  nom: string;
+  role: string;
+  password: string;
 }
 
-const SECRET_CODE = "CR2026";
+// Membres pré-enregistrés avec leurs mots de passe
+export const MEMBRES_REGISTRES: Membre[] = [
+  { nom: "Amadou Diallo", role: "Président", password: "pres2026" },
+  { nom: "Fatou Ndiaye", role: "Trésorier", password: "tres2026" },
+  { nom: "Ibrahima Sow", role: "Secrétaire", password: "sec2026" },
+  { nom: "Mariama Ba", role: "Vice-Président", password: "vice2026" },
+  { nom: "Ousmane Fall", role: "Chargé de la Com", password: "com2026" }
+];
+
+interface SecretCodeModalProps {
+  isOpen: boolean;
+  onSuccess: (membre: Membre) => void;
+}
 
 const SecretCodeModal = ({ isOpen, onSuccess }: SecretCodeModalProps) => {
-  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (code === SECRET_CODE) {
+    const membre = MEMBRES_REGISTRES.find(m => m.password === password);
+    
+    if (membre) {
       localStorage.setItem("cr_access", "granted");
-      onSuccess();
+      localStorage.setItem("cr_membre", JSON.stringify(membre));
+      onSuccess(membre);
     } else {
       setError(true);
       setIsShaking(true);
@@ -45,7 +61,7 @@ const SecretCodeModal = ({ isOpen, onSuccess }: SecretCodeModalProps) => {
             Espace Privé du CR
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Veuillez entrer le code secret pour accéder au dashboard
+            Veuillez entrer votre mot de passe personnel
           </DialogDescription>
         </DialogHeader>
 
@@ -54,10 +70,10 @@ const SecretCodeModal = ({ isOpen, onSuccess }: SecretCodeModalProps) => {
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="password"
-              placeholder="Code Secret du CR"
-              value={code}
+              placeholder="Votre mot de passe"
+              value={password}
               onChange={(e) => {
-                setCode(e.target.value);
+                setPassword(e.target.value);
                 setError(false);
               }}
               className={`pl-10 h-12 text-center text-lg tracking-widest font-mono ${
@@ -69,7 +85,7 @@ const SecretCodeModal = ({ isOpen, onSuccess }: SecretCodeModalProps) => {
 
           {error && (
             <p className="text-sm text-destructive text-center animate-fade-in">
-              Code incorrect. Veuillez réessayer.
+              Mot de passe incorrect. Veuillez réessayer.
             </p>
           )}
 
