@@ -1,27 +1,6 @@
-import { Wallet, Newspaper, Users, LayoutDashboard, LogOut, Settings } from "lucide-react";
-import crLogo from "@/assets/cr-logo.png";
-
-import { Membre } from "@/types/data";
-
-interface SidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-  onLogout: () => void;
-  isAdmin?: boolean;
-  currentMembre?: Membre;
-}
-
-const menuItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "transactions", label: "Transactions", icon: Wallet },
-  { id: "news", label: "Actualités", icon: Newspaper },
-  { id: "membres", label: "Membres", icon: Users },
-];
-
 import { useState } from "react";
 import { Wallet, Newspaper, Users, LayoutDashboard, LogOut, Settings, Menu } from "lucide-react";
 import crLogo from "@/assets/cr-logo.png";
-
 import { Membre } from "@/types/data";
 
 interface SidebarProps {
