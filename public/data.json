@@ -14,5 +14,15 @@
     {"date": "05/01/2026", "titre": "Nouveau partenariat", "texte": "Signature d'un accord avec l'association locale."},
     {"date": "02/01/2026", "titre": "Bonne année 2026", "texte": "Meilleurs vœux à tous les membres du CR !"}
   ],
+<<<<<<< HEAD
   "membres": []
+=======
+  "membres": [
+    {"nom": "Amadou Diallo", "role": "Président"},
+    {"nom": "Fatou Ndiaye", "role": "Trésorier"},
+    {"nom": "Ibrahima Sow", "role": "Secrétaire"},
+    {"nom": "Mariama Ba", "role": "Vice-Président"},
+    {"nom": "Ousmane Fall", "role": "Chargé de la Com"}
+  ]
+>>>>>>> c08488e08e9fbf27e8ff025e62e193e6451bffe5
 }

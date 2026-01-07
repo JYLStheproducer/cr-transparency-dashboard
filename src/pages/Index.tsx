@@ -184,7 +184,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            
+
             {canEdit && (
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-emerald-800 text-sm">
                 <Shield className="h-4 w-4 inline mr-2" />
@@ -197,12 +197,12 @@ const Index = () => {
           {activeSection === "dashboard" && (
             <div className="space-y-8">
               <BalanceCard data={data?.infos_caisse || null} />
-              
+
               <div className="grid lg:grid-cols-2 gap-8">
                 <TransactionsTable transactions={data?.transactions.slice(0, 3) || []} />
                 <NewsFeed news={data?.news.slice(0, 2) || []} />
               </div>
-              
+
               <MembersTable
                 membres={data?.membres || []}
                 canEdit={canEdit}
@@ -226,7 +226,11 @@ const Index = () => {
 
           {/* Members View */}
           {activeSection === "membres" && (
-            <MembersTable membres={data?.membres || []} />
+            <MembersTable 
+              membres={data?.membres || []} 
+              canEdit={canEdit} 
+              onAddMember={handleAddMember} 
+            />
           )}
         </div>
       </main>
