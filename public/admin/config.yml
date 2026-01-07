@@ -1,0 +1,46 @@
+backend:
+  name: github
+  repo: VOTRE-NOM/VOTRE-REPO  # ⚠️ Remplacez par votre repo GitHub
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "donnees"
+    label: "Données du Dashboard"
+    files:
+      - file: "public/data.json"
+        label: "Toutes les données"
+        name: "data"
+        format: "json"
+        fields:
+          - label: "Infos Caisse"
+            name: "infos_caisse"
+            widget: "object"
+            fields:
+              - { label: "Solde", name: "solde", widget: "string", hint: "Ex: 150.000" }
+              - { label: "Devise", name: "devise", widget: "string", default: "FCFA" }
+
+          - label: "Transactions"
+            name: "transactions"
+            widget: "list"
+            fields:
+              - { label: "Date", name: "date", widget: "string", hint: "Format: JJ/MM/AAAA" }
+              - { label: "Motif", name: "motif", widget: "string" }
+              - { label: "Montant", name: "montant", widget: "string", hint: "Ex: +50000 ou -15000" }
+
+          - label: "Actualités"
+            name: "news"
+            widget: "list"
+            fields:
+              - { label: "Date", name: "date", widget: "string", hint: "Format: JJ/MM/AAAA" }
+              - { label: "Titre", name: "titre", widget: "string" }
+              - { label: "Texte", name: "texte", widget: "text" }
+
+          - label: "Membres"
+            name: "membres"
+            widget: "list"
+            fields:
+              - { label: "Nom", name: "nom", widget: "string" }
+              - { label: "Rôle", name: "role", widget: "select", options: ["Président", "Vice-Président", "Trésorier", "Secrétaire", "Chargé de la Com", "Membre"] }

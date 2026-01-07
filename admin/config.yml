@@ -1,0 +1,43 @@
+backend:
+  name: github
+  repo: votre-nom/votre-depot-cr # Remplacez par votre repo GitHub
+  branch: main
+
+media_folder: "public/images" # Dossier pour les images
+public_folder: "/images"
+
+collections:
+  - name: "donnees"
+    label: "Données du Dashboard"
+    files:
+      - file: "public/data.json"
+        label: "Données Financières et Membres"
+        name: "data"
+        description: "État de la caisse, transactions, news et membres"
+        fields:
+          - label: "Informations de la Caisse"
+            name: "infos_caisse"
+            widget: "object"
+            fields:
+              - {label: "Solde", name: "solde", widget: "string", default: "0"}
+              - {label: "Devise", name: "devise", widget: "string", default: "FCFA"}
+          - label: "Transactions"
+            name: "transactions"
+            widget: "list"
+            fields:
+              - {label: "Date", name: "date", widget: "string"}
+              - {label: "Motif", name: "motif", widget: "string"}
+              - {label: "Montant", name: "montant", widget: "string"}
+          - label: "Actualités"
+            name: "news"
+            widget: "list"
+            fields:
+              - {label: "Date", name: "date", widget: "string"}
+              - {label: "Titre", name: "titre", widget: "string"}
+              - {label: "Texte", name: "texte", widget: "text"}
+          - label: "Membres"
+            name: "membres"
+            widget: "list"
+            fields:
+              - {label: "Nom", name: "nom", widget: "string"}
+              - {label: "Rôle", name: "role", widget: "string"}
