@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Amélioration de l'accessibilité et de l'expérience mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  /* Ajustement pour les petits écrans */
+  .container {
+    @apply px-4;
+  }
+}
+
+/* Pour les écrans tactiles */
+@media (hover: none) and (pointer: coarse) {
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 @layer base {
   :root {
     --background: 140 10% 97%;

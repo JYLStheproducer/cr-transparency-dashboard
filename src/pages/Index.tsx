@@ -195,7 +195,7 @@ const Index = () => {
         currentMembre={currentMembre}
       />
 
-      <main className="ml-64 min-h-screen p-8">
+      <main className="md:ml-64 min-h-screen p-4 md:p-8">
         <div className="max-w-6xl mx-auto">
           {/* Header avec infos membre */}
           <header className="mb-8 animate-fade-in">

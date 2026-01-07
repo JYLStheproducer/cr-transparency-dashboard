@@ -38,16 +38,16 @@ const MembersTable = ({ membres, canEdit = false, onAddMember }: MembersTablePro
 
   return (
     <div className="bg-card rounded-2xl border shadow-card overflow-hidden animate-fade-in">
-      <div className="p-6 border-b flex justify-between items-center">
+      <div className="p-4 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
             <Users className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">
+            <h2 className="text-base sm:text-lg font-display font-semibold text-foreground">
               Membres du CR
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Équipe dirigeante
             </p>
           </div>
@@ -57,7 +57,7 @@ const MembersTable = ({ membres, canEdit = false, onAddMember }: MembersTablePro
             variant="outline"
             size="sm"
             onClick={() => setShowAddModal(true)}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto"
           >
             <Plus className="h-4 w-4" />
             Ajouter

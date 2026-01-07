@@ -23,11 +23,11 @@ const BalanceCard = ({ data }: BalanceCardProps) => {
 
       <div className="relative">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/20">
-            <Wallet className="h-6 w-6 text-success" />
+          <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-success/20">
+            <Wallet className="h-5 w-5 sm:h-6 sm:w-6 text-success" />
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Solde Total de la Caisse</p>
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Solde Total de la Caisse</p>
             <div className="flex items-center gap-1 text-xs text-success">
               <TrendingUp className="h-3 w-3" />
               <span>À jour</span>
@@ -36,10 +36,10 @@ const BalanceCard = ({ data }: BalanceCardProps) => {
         </div>
 
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl md:text-5xl font-display font-bold text-foreground">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground">
             {data.solde}
           </span>
-          <span className="text-xl font-semibold text-muted-foreground">
+          <span className="text-lg sm:text-xl font-semibold text-muted-foreground">
             {data.devise}
           </span>
         </div>
