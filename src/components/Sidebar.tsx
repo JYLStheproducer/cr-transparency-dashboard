@@ -1,10 +1,11 @@
-import { Wallet, Newspaper, Users, LayoutDashboard, LogOut } from "lucide-react";
+import { Wallet, Newspaper, Users, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import crLogo from "@/assets/cr-logo.png";
 
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
   onLogout: () => void;
+  isAdmin?: boolean;
 }
 
 const menuItems = [
@@ -14,7 +15,7 @@ const menuItems = [
   { id: "membres", label: "Membres", icon: Users },
 ];
 
-const Sidebar = ({ activeSection, onSectionChange, onLogout }: SidebarProps) => {
+const Sidebar = ({ activeSection, onSectionChange, onLogout, isAdmin = false }: SidebarProps) => {
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar flex flex-col z-40">
       {/* Logo */}
@@ -37,7 +38,7 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout }: SidebarProps) => 
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
-          
+
           return (
             <button
               key={item.id}
@@ -54,6 +55,16 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout }: SidebarProps) => 
             </button>
           );
         })}
+
+        {isAdmin && (
+          <a
+            href="/admin"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
+          >
+            <Settings className="h-5 w-5" />
+            <span className="font-medium">Administration</span>
+          </a>
+        )}
       </nav>
 
       {/* Footer */}

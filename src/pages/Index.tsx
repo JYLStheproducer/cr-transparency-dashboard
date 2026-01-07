@@ -151,6 +151,7 @@ const Index = () => {
         activeSection={activeSection}
         onSectionChange={setActiveSection}
         onLogout={handleLogout}
+        isAdmin={canEdit}
       />
 
       <main className="ml-64 min-h-screen p-8">
