@@ -9,11 +9,19 @@ import { DashboardData } from "@/types/data";
 import { Loader2, RefreshCw, UserCircle, Shield, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  signInWithPassword,
+  signInWithMagicLink,
+  getCurrentUser,
+  onAuthStateChange,
+  generateTempPassword
+} from "@/services/supabaseAuthService";
+import { fetchDashboardData, addMember } from "@/services/supabaseDataService";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showModal, setShowModal] = useState(true);
-  const [currentMembre, setCurrentMembre] = useState<Membre | null>(null);
+  const [currentMembre, setCurrentMembre] = useState<any>(null);
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,54 +29,64 @@ const Index = () => {
 
   const canEdit = currentMembre?.role === "Chargé de la Com";
 
-  // Fonction pour générer un mot de passe à partir du nom
-  const generatePasswordFromName = (nom: string): string => {
-    // Prendre les deux premières lettres du prénom et les deux dernières lettres du nom
-    const nomParts = nom.trim().split(' ');
-    if (nomParts.length < 2) {
-      return nom.substring(0, 4).toLowerCase() + '2026';
-    }
-    const firstName = nomParts[0];
-    const lastName = nomParts[nomParts.length - 1];
-    return firstName.substring(0, 2).toLowerCase() + lastName.substring(lastName.length - 2).toLowerCase() + '2026';
-  };
-
   useEffect(() => {
-    const access = localStorage.getItem("cr_access");
-    const membreStored = localStorage.getItem("cr_membre");
-
-    if (access === "granted" && membreStored) {
+    // Vérifier l'état d'authentification
+    const checkAuth = async () => {
+      console.log("Vérification de l'état d'authentification...");
       try {
-        const membre = JSON.parse(membreStored);
-        setCurrentMembre(membre);
+        const user = await getCurrentUser();
+        console.log("Utilisateur récupéré:", user);
+        if (user) {
+          setCurrentMembre(user);
+          setIsAuthenticated(true);
+          setShowModal(false);
+          console.log("Utilisateur connecté, modal fermé");
+        } else {
+          console.log("Aucun utilisateur connecté, affichage du modal");
+        }
+      } catch (err) {
+        console.error("Erreur d'authentification:", err);
+      }
+    };
+
+    checkAuth();
+
+    // Écouter les changements d'authentification
+    const authSubscription = onAuthStateChange((event, session) => {
+      console.log("Changement d'état d'authentification:", event);
+      if (event === 'SIGNED_IN') {
+        console.log("Utilisateur connecté via Supabase");
         setIsAuthenticated(true);
         setShowModal(false);
-      } catch {
-        localStorage.removeItem("cr_access");
-        localStorage.removeItem("cr_membre");
+      } else if (event === 'SIGNED_OUT') {
+        console.log("Utilisateur déconnecté via Supabase");
+        setIsAuthenticated(false);
+        setShowModal(true);
       }
-    }
+    });
+
+    return () => {
+      if (authSubscription && authSubscription.data && authSubscription.data.subscription) {
+        authSubscription.data.subscription.unsubscribe();
+      }
+    };
   }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchData();
+      loadDashboardData();
     }
   }, [isAuthenticated]);
 
-  const fetchData = async () => {
+  const loadDashboardData = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("/data.json");
-      if (!response.ok) {
-        throw new Error("Erreur lors du chargement des données");
-      }
-      const jsonData: DashboardData = await response.json();
-      setData(jsonData);
+      const dashboardData = await fetchDashboardData();
+      setData(dashboardData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue");
+      setError(err instanceof Error ? err.message : "Erreur de chargement des données");
     } finally {
       setIsLoading(false);
     }
@@ -80,41 +98,55 @@ const Index = () => {
     setShowModal(false);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("cr_access");
-    localStorage.removeItem("cr_membre");
-    setCurrentMembre(null);
-    setIsAuthenticated(false);
-    setShowModal(true);
-    setData(null);
+  const handleLogout = async () => {
+    try {
+      // Déconnexion de Supabase
+      // (Vous devrez implémenter cette fonction dans supabaseAuthService.ts)
+      // await signOut();
+      setCurrentMembre(null);
+      setIsAuthenticated(false);
+      setShowModal(true);
+      setData(null);
+    } catch (error) {
+      console.error("Erreur de déconnexion:", error);
+    }
   };
 
-  const handleAddMember = (membre: Membre) => {
+  const handleAddMember = async (membre: Membre) => {
     if (!data) return;
 
-    // Mettre à jour les données locales
-    const newData = {
-      ...data,
-      membres: [...data.membres, membre]
-    };
+    try {
+      // Ajouter le membre à la base de données Supabase
+      await addMember(membre);
 
-    setData(newData);
+      // Recharger les données
+      await loadDashboardData();
 
-    // Afficher un message à l'utilisateur pour lui indiquer de modifier le fichier data.json
-    alert("Membre ajouté avec succès ! Pour que le changement soit permanent, veuillez ajouter ce membre au fichier public/data.json sur votre serveur.");
+      alert("Membre ajouté avec succès dans la base de données !");
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du membre:", error);
+      alert("Erreur lors de l'ajout du membre");
+    }
   };
 
   if (!isAuthenticated) {
+    // Afficher un loader si les données ne sont pas encore chargées
+    if (isLoading) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-2"></div>
+            <p>Chargement des données de connexion...</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <SecretCodeModal
           isOpen={showModal}
           onSuccess={handleAccessGranted}
-          membres={data?.membres.map(m => ({
-            nom: m.nom,
-            role: m.role,
-            password: generatePasswordFromName(m.nom)
-          })) || []}
         />
       </div>
     );
@@ -136,7 +168,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-destructive mb-4">{error}</p>
-          <Button onClick={fetchData} variant="outline" className="gap-2">
+          <Button onClick={loadDashboardData} variant="outline" className="gap-2">
             <RefreshCw className="h-4 w-4" />
             Réessayer
           </Button>
@@ -161,7 +193,7 @@ const Index = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-3xl font-display font-bold text-foreground mb-2">
-                  Bienvenue, {currentMembre?.nom.split(' ')[0]}
+                  Bienvenue, {currentMembre?.email || currentMembre?.nom?.split(' ')[0] || 'Membre'}
                 </h1>
                 <p className="text-muted-foreground">
                   Gérez et suivez les activités du Comité en toute transparence
@@ -170,10 +202,10 @@ const Index = () => {
               <div className="flex items-center gap-3 bg-card p-4 rounded-xl border shadow-card">
                 <UserCircle className="h-10 w-10 text-primary" />
                 <div>
-                  <p className="font-semibold text-foreground">{currentMembre?.nom}</p>
+                  <p className="font-semibold text-foreground">{currentMembre?.email || currentMembre?.nom || 'Membre'}</p>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="text-xs">
-                      {currentMembre?.role}
+                      {currentMembre?.role || 'Membre'}
                     </Badge>
                     {canEdit && (
                       <Badge className="text-xs bg-emerald-600 text-white gap-1">
@@ -189,7 +221,7 @@ const Index = () => {
             {canEdit && (
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-emerald-800 text-sm">
                 <Shield className="h-4 w-4 inline mr-2" />
-                Vous avez les droits d'édition. Pour modifier les données, éditez le fichier <code className="bg-emerald-100 px-1 rounded">public/data.json</code>
+                Vous avez les droits d'édition. Les modifications sont sauvegardées dans la base de données.
               </div>
             )}
           </header>
@@ -227,10 +259,10 @@ const Index = () => {
 
           {/* Members View */}
           {activeSection === "membres" && (
-            <MembersTable 
-              membres={data?.membres || []} 
-              canEdit={canEdit} 
-              onAddMember={handleAddMember} 
+            <MembersTable
+              membres={data?.membres || []}
+              canEdit={canEdit}
+              onAddMember={handleAddMember}
             />
           )}
         </div>
