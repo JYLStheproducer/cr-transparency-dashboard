@@ -1,0 +1,23 @@
+{
+  "infos_caisse": {
+    "solde": "150.000",
+    "devise": "FCFA"
+  },
+  "transactions": [
+    {"date": "05/01/2026", "motif": "Cotisations mensuelles", "montant": "+50000"},
+    {"date": "06/01/2026", "motif": "Achat matériel bureau", "montant": "-15000"},
+    {"date": "04/01/2026", "motif": "Don membre honoraire", "montant": "+25000"},
+    {"date": "03/01/2026", "motif": "Frais de déplacement", "montant": "-8000"}
+  ],
+  "news": [
+    {"date": "07/01/2026", "titre": "Prochaine Assemblée", "texte": "RDV à 14h au siège pour l'assemblée générale mensuelle."},
+    {"date": "05/01/2026", "titre": "Nouveau partenariat", "texte": "Signature d'un accord avec l'association locale."},
+    {"date": "02/01/2026", "titre": "Bonne année 2026", "texte": "Meilleurs vœux à tous les membres du CR !"}
+  ],
+  "membres": [
+    {"nom": "Amadou Diallo", "role": "Président"},
+    {"nom": "Fatou Ndiaye", "role": "Trésorier"},
+    {"nom": "Ibrahima Sow", "role": "Secrétaire"},
+    {"nom": "Mariama Ba", "role": "Vice-Président"}
+  ]
+}
