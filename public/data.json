@@ -18,6 +18,7 @@
     {"nom": "Amadou Diallo", "role": "Président"},
     {"nom": "Fatou Ndiaye", "role": "Trésorier"},
     {"nom": "Ibrahima Sow", "role": "Secrétaire"},
-    {"nom": "Mariama Ba", "role": "Vice-Président"}
+    {"nom": "Mariama Ba", "role": "Vice-Président"},
+    {"nom": "Ousmane Fall", "role": "Chargé de la Com"}
   ]
 }
