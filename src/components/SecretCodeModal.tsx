@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Lock, ShieldCheck } from "lucide-react";
+import crLogo from "@/assets/cr-logo.png";
+
+interface SecretCodeModalProps {
+  isOpen: boolean;
+  onSuccess: () => void;
+}
+
+const SECRET_CODE = "CR2026";
+
+const SecretCodeModal = ({ isOpen, onSuccess }: SecretCodeModalProps) => {
+  const [code, setCode] = useState("");
+  const [error, setError] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (code === SECRET_CODE) {
+      localStorage.setItem("cr_access", "granted");
+      onSuccess();
+    } else {
+      setError(true);
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen}>
+      <DialogContent 
+        className={`sm:max-w-md border-primary/20 bg-card ${isShaking ? 'animate-shake' : ''}`}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
+        <DialogHeader className="text-center items-center">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
+            <img src={crLogo} alt="CR Logo" className="h-16 w-16 object-contain" />
+          </div>
+          <DialogTitle className="text-2xl font-display text-primary">
+            Espace Privé du CR
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Veuillez entrer le code secret pour accéder au dashboard
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="password"
+              placeholder="Code Secret du CR"
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value);
+                setError(false);
+              }}
+              className={`pl-10 h-12 text-center text-lg tracking-widest font-mono ${
+                error ? 'border-destructive focus-visible:ring-destructive' : ''
+              }`}
+              autoFocus
+            />
+          </div>
+
+          {error && (
+            <p className="text-sm text-destructive text-center animate-fade-in">
+              Code incorrect. Veuillez réessayer.
+            </p>
+          )}
+
+          <Button type="submit" className="w-full h-12 text-base font-semibold gap-2">
+            <ShieldCheck className="h-5 w-5" />
+            Accéder au Dashboard
+          </Button>
+        </form>
+
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          Réservé aux membres autorisés du CR
+        </p>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default SecretCodeModal;
